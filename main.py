@@ -11,8 +11,7 @@ process_threads = {}
 threads = []
 pipe_conn, child_conn = multiprocessing.Pipe()
 shared_queue = Queue()
-mutex = multiprocessing.Lock()
-process_threads = {}
+running_processes_lock = multiprocessing.Lock() #mutex to protect a shared resource. This lock ensures that concurrent access to the running_processes dictionary is properly synchronized.
 
 if sys.platform.startswith('win'):
     libc = ctypes.CDLL('msvcrt')
@@ -84,7 +83,8 @@ def create_process(process_name):
             logging.error(f"Child process '{process_name}' with PID {os.getpid()} encountered an error: {str(e)}")
         os._exit(1)
     else:
-        running_processes[pid] = process_name
+        with running_processes_lock:
+            running_processes[pid] = process_name
         logging.info(f"Child process '{process_name}' with PID {pid} created.")
         process_function(process_name)
 
@@ -162,13 +162,12 @@ if __name__ == "__main__":
         print("Options:")
         print("1. Create a process")
         print("2. Create a thread")
-        print("3. List processes")
-        print("4. Terminate a thread")
-        print("5. Monitor all running processes on your device.")
-        print("6. Send IPC message")
-        print("7. Receive IPC message")
-        print("8. Clear log file")
-        print("9. Exit")
+        print("3. Terminate a thread")
+        print("4. Monitor all running processes on your device.")
+        print("5. Send IPC message")
+        print("6. Receive IPC message")
+        print("7. Clear log file")
+        print("8. Exit")
         choice = input("Select an option: ").lower()
 
         if choice == "1":
@@ -179,21 +178,19 @@ if __name__ == "__main__":
             thread_name = input("Enter the thread name: ")
             create_thread(thread_name)
             print('\n')
-        elif choice == "4":
+        elif choice == "3":
             thread_name = input("Enter thread name to terminate: ")
             terminate_thread(thread_name)
             print('\n')
-        elif choice == "3":
+            print('\n')
+        elif choice == "4":
             list_processes()
             print('\n')
         elif choice == "5":
-            list_processes()
-            print('\n')
-        elif choice == "6":
             message = input("Enter message to send: ")
             ipc_send_message(message)
             print('\n')
-        elif choice == "7":
+        elif choice == "6":
             received_message = ipc_receive_message()
             print('\n')
             if received_message:
@@ -201,10 +198,10 @@ if __name__ == "__main__":
             else:
                 print("No message available")
             print('\n')
-        elif choice == "8":
+        elif choice == "7":
             clear_log_file()
             print('\n')
-        elif choice == "9":
+        elif choice == "8":
             print("Exited successfully")
             exit(0)
         else:
