@@ -231,40 +231,41 @@ if __name__ == "__main__":
         print("9. Exit")
         choice = input("Select an option: ").lower()
 
-        if choice == "1":
-            process_name = input("Enter the process name: ")
-            create_process(process_name)
-            print('\n')
-        elif choice == "2":
-            thread_name = input("Enter the thread name: ")
-            create_thread(thread_name)
-            print('\n')
-        elif choice == "3":
-            thread_name = input("Enter thread name to terminate: ")
-            terminate_thread(thread_name)
-            print('\n')
-        elif choice == "4":
-            list_processes()
-            print('\n')
-        elif choice == "5":
-            message = input("Enter message to send: ")
-            ipc_send_message(message)
-            print('\n')
-        elif choice == "6":
-            received_message = ipc_receive_message()
-            print('\n')
-            if received_message:
-                print(f"Received message: {received_message}")
-            else:
-                print("No message available")
-            print('\n')
-        elif choice == "7":
-            clear_log_file()
-            print('\n')
-        elif choice == "8":
-            run_producer_consumer_example()
-        elif choice == "9":
-            print("Exited successfully")
-            exit(0)
-        else:
-            print("Invalid option. Try again.")
+        match choice:
+            case "1":
+                process_name = input("Enter the process name: ")
+                create_process(process_name)
+                print('\n')
+            case "2":
+                thread_name = input("Enter the thread name: ")
+                create_thread(thread_name)
+                print('\n')
+            case "3":
+                thread_name = input("Enter thread name to terminate: ")
+                terminate_thread(thread_name)
+                print('\n')
+            case "4":
+                list_processes()
+                print('\n')
+            case "5":
+                message = input("Enter message to send: ")
+                ipc_send_message(message)
+                print('\n')
+            case "6":
+                received_message = ipc_receive_message()
+                print('\n')
+                if received_message:
+                    print(f"Received message: {received_message}")
+                else:
+                    print("No message available")
+                print('\n')
+            case "7":
+                clear_log_file()
+                print('\n')
+            case "8":
+                run_producer_consumer_example()
+            case "9":
+                print("Exited successfully")
+                exit(0)
+            case _:
+                print("Invalid option. Try again.")
