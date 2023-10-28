@@ -26,17 +26,18 @@ else:
 def create_thread(thread_name):
     process_pid = os.getpid()
     thread_id = ctypes.c_long()
-    thread_func = ctypes.CFUNCTYPE(None)(lambda: thread_wrapper(thread_name))
+    
+    def thread_func():
+        logging.info(f"Thread '{thread_name}' running")
+    
+    thread_func_ptr = ctypes.CFUNCTYPE(None)(thread_func)
 
-    if libc.pthread_create(ctypes.byref(thread_id), None, thread_func, None) == 0:
-        logging.info(f"Thread '{thread_name}' created successfully")
+    if libc.pthread_create(ctypes.byref(thread_id), None, thread_func_ptr, None) == 0:
         threads.append((thread_id, thread_name))
         process_threads.setdefault(process_pid, []).append((thread_id, thread_name))
+        logging.info(f"Thread '{thread_name}' created successfully")
     else:
         logging.error("Failed to create thread")
-
-def thread_wrapper(thread_name):
-    logging.info(f"Thread '{thread_name}' running")
 
 def list_threads():
     process_pid = os.getpid()
@@ -90,12 +91,21 @@ def create_process(process_name):
 def terminate_thread(thread_name):
     global threads
     threads_to_remove = []
-    for thread, name in threads:
+    
+    process_pid = os.getpid()
+    for thread_id, name in process_threads.get(process_pid, []):
         if name == thread_name:
-            thread.join()
-            threads_to_remove.append((thread, name))
-            print(f"Thread '{thread_name}' terminated.")
-            logging.info(f"Thread '{thread_name}' terminated.")
+            if libc.pthread_cancel(thread_id) == 0:
+                print(f"Thread '{thread_name}' termination requested.")
+                logging.info(f"Thread '{thread_name}' termination requested.")
+                threads_to_remove.append((thread_id, name))
+            else:
+                logging.error(f"Failed to request termination for thread '{thread_name}'")
+    
+    for thread_id, name in threads_to_remove:
+        if libc.pthread_join(thread_id, None) == 0:
+            print(f"Thread '{name}' terminated.")
+            logging.info(f"Thread '{name}' terminated.")
     threads = [(t, n) for t, n in threads if (t, n) not in threads_to_remove]
 
 def list_processes():
@@ -159,18 +169,22 @@ if __name__ == "__main__":
         print("7. Receive IPC message")
         print("8. Clear log file")
         print("9. Exit")
-        choice = input("Select an option: ")
+        choice = input("Select an option: ").lower()
 
         if choice == "1":
             process_name = input("Enter the process name: ")
             create_process(process_name)
             print('\n')
         elif choice == "2":
-            create_thread()
+            thread_name = input("Enter the thread name: ")
+            create_thread(thread_name)
             print('\n')
         elif choice == "4":
             thread_name = input("Enter thread name to terminate: ")
             terminate_thread(thread_name)
+            print('\n')
+        elif choice == "3":
+            list_processes()
             print('\n')
         elif choice == "5":
             list_processes()
