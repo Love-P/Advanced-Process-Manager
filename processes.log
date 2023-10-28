@@ -1,3 +1,0 @@
-2023-10-27 21:45:41,118 - Child process 'open -a TextEdit' with PID 75171 created.
-2023-10-27 21:45:41,119 - Child process 'open -a TextEdit' with PID 75163 running
-2023-10-27 21:45:41,124 - Child process 'open -a TextEdit' with PID 75171 encountered an error: [Errno 2] No such file or directory
