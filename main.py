@@ -11,7 +11,7 @@ process_threads = {}
 threads = []
 pipe_conn, child_conn = multiprocessing.Pipe()
 shared_queue = Queue()
-running_processes_lock = multiprocessing.Lock() #mutex to protect a shared resource. This lock ensures that concurrent access to the running_processes dictionary is properly synchronized.
+mutex = multiprocessing.Lock() #mutex to protect a shared resource. This lock ensures that concurrent access to the running_processes dictionary is properly synchronized.
 
 if sys.platform.startswith('win'):
     libc = ctypes.CDLL('msvcrt')
@@ -49,7 +49,7 @@ def list_threads():
         for thread_id, thread_name in threads:
             print(f"Thread ID: {thread_id}, Name: {thread_name}")
 
-def process_function(process_name):
+def process_menu(process_name):
     process_log.info(f"Child process '{process_name}' with PID {os.getpid()} running")
     process_threads[os.getpid()] = []
 
@@ -83,10 +83,10 @@ def create_process(process_name):
             logging.error(f"Child process '{process_name}' with PID {os.getpid()} encountered an error: {str(e)}")
         os._exit(1)
     else:
-        with running_processes_lock:
+        with mutex:
             running_processes[pid] = process_name
         logging.info(f"Child process '{process_name}' with PID {pid} created.")
-        process_function(process_name)
+        process_menu(process_name)
 
 def terminate_thread(thread_name):
     global threads
