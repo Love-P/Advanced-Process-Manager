@@ -1,4 +1,4 @@
-import os, sys, logging, multiprocessing, psutil, ctypes
+import os, sys, logging, multiprocessing, psutil, ctypes, time, random, threading, fcntl, errno
 from queue import Queue
 
 logging.basicConfig(filename='processes.log', level=logging.INFO,
@@ -12,6 +12,17 @@ threads = []
 pipe_conn, child_conn = multiprocessing.Pipe()
 shared_queue = Queue()
 mutex = multiprocessing.Lock() #mutex to protect a shared resource. This lock ensures that concurrent access to the running_processes dictionary is properly synchronized.
+read_pipe, write_pipe = os.pipe()
+
+BUFFER_SIZE = 5
+
+# Shared buffer
+buffer = []
+
+# Semaphores
+mutex = threading.Semaphore(1)  # Mutex for buffer access
+empty = threading.Semaphore(BUFFER_SIZE)  # Semaphore for empty slots
+filled = threading.Semaphore(0)  # Semaphore for filled slots
 
 if sys.platform.startswith('win'):
     libc = ctypes.CDLL('msvcrt')
@@ -147,15 +158,64 @@ def clear_log_file():
         pass
     print('\nlog file cleared.')
 
-read_pipe, write_pipe = os.pipe()
 
 def ipc_send_message(message):
     os.write(write_pipe, message.encode())
     process_log.info(f"Message sent: {message}")
 
 def ipc_receive_message():
-    message = os.read(read_pipe, 1024)
-    return message.decode()
+    try:
+        flags = fcntl.fcntl(read_pipe, fcntl.F_GETFL)
+        fcntl.fcntl(read_pipe, fcntl.F_SETFL, flags | os.O_NONBLOCK)
+        message = os.read(read_pipe, 1024)
+        return message.decode()
+    except OSError as e:
+        if e.errno == errno.EAGAIN or e.errno == errno.EWOULDBLOCK:
+            return None
+        else:
+            raise
+
+
+def producer():
+    for i in range(10):
+        item = f"Item-{i}"  # You can generate your items here
+        empty.acquire()  # Wait for an empty slot
+        mutex.acquire()  # Get exclusive access to the buffer
+        buffer.append(item)  # Add item to the buffer
+        print(f"Produced {item}. Buffer: {buffer}")
+        process_log.info(f"Produced {item}. Buffer: {buffer}")
+        mutex.release()  # Release the mutex
+        filled.release()  # Notify that a slot is filled
+        time.sleep(random.uniform(0.1, 0.5))  # Simulate work
+
+# Consumer function
+def consumer():
+    for i in range(10):
+        filled.acquire()  # Wait for a filled slot
+        mutex.acquire()  # Get exclusive access to the buffer
+        item = buffer.pop(0)  # Remove and consume the first item
+        print(f"Consumed {item}. Buffer: {buffer}")
+        process_log.info(f"Consumed {item}. Buffer: {buffer}")
+        mutex.release()  # Release the mutex
+        empty.release()  # Notify that a slot is empty
+        time.sleep(random.uniform(0.1, 0.5))  # Simulate work
+
+
+def run_producer_consumer_example():
+    producers = [threading.Thread(target=producer) for _ in range(2)]
+    consumers = [threading.Thread(target=consumer) for _ in range(2)]
+
+    for producer_thread in producers:
+        producer_thread.start()
+    for consumer_thread in consumers:
+        consumer_thread.start()
+
+    time.sleep(5)  # Allow the threads to run for some time
+
+    for producer_thread in producers:
+        producer_thread.join()
+    for consumer_thread in consumers:
+        consumer_thread.join()
 
 if __name__ == "__main__":
     while True:
@@ -167,7 +227,8 @@ if __name__ == "__main__":
         print("5. Send IPC message")
         print("6. Receive IPC message")
         print("7. Clear log file")
-        print("8. Exit")
+        print("8. Process Synchronization (Producer-Consumer)")
+        print("9. Exit")
         choice = input("Select an option: ").lower()
 
         if choice == "1":
@@ -181,7 +242,6 @@ if __name__ == "__main__":
         elif choice == "3":
             thread_name = input("Enter thread name to terminate: ")
             terminate_thread(thread_name)
-            print('\n')
             print('\n')
         elif choice == "4":
             list_processes()
@@ -202,6 +262,8 @@ if __name__ == "__main__":
             clear_log_file()
             print('\n')
         elif choice == "8":
+            run_producer_consumer_example()
+        elif choice == "9":
             print("Exited successfully")
             exit(0)
         else:
