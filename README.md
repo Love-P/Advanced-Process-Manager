@@ -126,9 +126,8 @@ In this section, we delve into the technical details of each key function used i
 
 - **Design**: It orchestrates the execution of producer and consumer threads, simulating the classic producer-consumer problem. The `producers` and `consumers` are thread instances, and their execution is initiated using `start()`. Additionally, the function features a delay period to allow the threads to operate. Finally, it employs `join()` to await the completion of all threads.
 
-These functions are integral to the advanced Process Manager, providing
+These functions are integral to the advanced Process Manager, providing fine-grained control over processes, threads, and IPC, with a strong emphasis on process synchronization and thread management. Understanding their design is crucial for harnessing the capabilities of the Process Manager effectively.
 
-These functions are the building blocks of the advanced Process Manager and provide extensive control over processes, threads, and IPC. Understanding their purpose and design is essential for utilizing the Process Manager effectively.
 
 
 
