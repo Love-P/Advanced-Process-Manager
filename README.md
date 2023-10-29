@@ -15,7 +15,7 @@ This Process Manager project includes the following functionalities:
 7. Logging and Reporting
 
 ## Installation
-1. Ensure you have Python 3.11.6 installed. You can download Python 3.11.6 from the official Python website: [Python Downloads](https://www.python.org/downloads/release/).
+1. **Ensure you have Python 3.11.6 installed. You can download Python 3.11.6 from the official Python website**: [Python Downloads](https://www.python.org/downloads/release/).
 
 2. **Clone the repository and cd into it**:
    ```bash
