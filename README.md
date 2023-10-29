@@ -58,73 +58,75 @@ Select an option:
 
 ## Function Explanations and Design
 
-In this section, we'll provide an overview of the key functions used in the advanced Process Manager and their design. These functions are essential for creating, managing, and synchronizing processes and threads.
+In this section, we delve into the technical details of each key function used in the advanced Process Manager, utilizing specific terminology and relevant packages.
 
-#### 1. `create_thread(thread_name)`
+### `create_thread(thread_name)`
 
-- **Purpose**: This function is used to create a new thread within a process.
+- **Purpose**: This function's primary objective is to spawn a new POSIX thread (thread) within the current process.
 
-- **Design**: It obtains the process ID and generates a unique thread ID. It defines a `thread_func` that represents the thread's execution logic. Using the `pthread_create` function, a new thread is created and added to the list of threads for the current process.
+- **Design**: It retrieves the process ID (PID) of the calling process and generates a unique thread ID. Subsequently, it defines a thread function (`thread_func`) to encapsulate the execution logic of the newly created thread. Utilizing the Python `ctypes` package, it converts `thread_func` into a C-compatible function pointer. The function then employs the `pthread_create` function from the C Standard Library (`libc`) via `ctypes` to create the thread. Upon successful creation, the thread ID is stored alongside the thread's given name, and the process log records its creation.
 
-#### 2. `list_threads()`
+### `list_threads()`
 
-- **Purpose**: This function lists the threads within the current process.
+- **Purpose**: This function serves the purpose of enumerating and displaying the threads currently running within the process.
 
-- **Design**: It retrieves the process ID and fetches the list of threads associated with that process. It then displays the thread IDs and their names.
+- **Design**: It identifies the PID of the process invoking the function. Next, it retrieves the list of threads associated with that process from the `process_threads` data structure. The function proceeds to enumerate the threads, revealing essential details such as their thread IDs and user-assigned names.
 
-#### 3. `process_menu(process_name)`
+### `process_menu(process_name)`
 
-- **Purpose**: This function is responsible for managing the interaction within a child process.
+- **Purpose**: The `process_menu` function manages user interaction within a child process, allowing the user to create threads, list threads, or exit the child process.
 
-- **Design**: It provides a menu for creating threads, listing threads, or exiting the child process. The menu options allow users to interact with threads within the process.
+- **Design**: This function serves as a menu-based interface within the child process. It provides user options to create threads and list existing threads. The design emphasizes interaction by accepting user input, including the name for new threads. Exiting the child process is also an available option.
 
-#### 4. `create_process(process_name)`
+### `create_process(process_name)`
 
-- **Purpose**: This function creates a new child process.
+- **Purpose**: This function initiates the creation of a new child process through forking.
 
-- **Design**: It forks a new child process using `os.fork()`. In the child process, it attempts to execute a new process specified by `process_name`. The function also logs the creation of the child process.
+- **Design**: The function utilizes `os.fork()` to initiate the fork operation, resulting in the generation of a new child process. In the child process context, it endeavors to execute the specified process, as denoted by `process_name`, thereby replacing the current process image. During this process, errors are meticulously logged. In the parent process, the global `running_processes` data structure is updated to include the child process.
 
-#### 5. `terminate_thread(thread_name)`
+### `terminate_thread(thread_name)`
 
-- **Purpose**: This function requests the termination of a specific thread within the current process.
+- **Purpose**: The `terminate_thread` function is employed to request the termination of a designated thread within the present process.
 
-- **Design**: It iterates through the threads in the current process, identifies the target thread by name, and requests thread termination using the `pthread_cancel` function. The function waits for the terminated threads and removes them from the list.
+- **Design**: It initiates a search through the threads associated with the present process using the acquired PID. Upon locating the target thread, it employs the `pthread_cancel` function to submit a termination request. The function then waits for the selected threads to conclude, and upon successful termination, the threads are removed from the global thread list.
 
-#### 6. `list_processes()`
+### `list_processes()`
 
-- **Purpose**: This function lists processes created through the code or all processes on the computer.
+- **Purpose**: This function offers users the ability to list processes generated by the script or all processes running on the host system.
 
-- **Design**: It provides a menu with options to list processes. It uses the `psutil` library to retrieve information about processes, including their PIDs, parent PIDs, names, and status.
+- **Design**: It delivers a submenu with selections for process listing, including a choice to list only processes initiated by the script or to enumerate all processes on the host system. The function employs the `psutil` package to collect detailed process information, including PIDs, parent PIDs, names, and statuses. This information is displayed to the user and recorded in the process log.
 
-#### 7. `clear_log_file()`
+### `clear_log_file()`
 
-- **Purpose**: This function clears the log file used for logging process and thread activities.
+- **Purpose**: Clearing the log file is the primary purpose of this function, eliminating previous log entries for a fresh start.
 
-- **Design**: It opens the log file and empties its content, effectively clearing it for future use.
+- **Design**: The function accesses the log file, effectively emptying its contents. This action resets the log file, making it ready to capture new entries.
 
-#### 8. `ipc_send_message(message)`
+### `ipc_send_message(message)`
 
-- **Purpose**: This function sends a message via Inter-Process Communication (IPC).
+- **Purpose**: This function is utilized to transmit messages between processes via Inter-Process Communication (IPC).
 
-- **Design**: It writes the message to a pipe, allowing communication between processes. The message is also logged for reference.
+- **Design**: It writes the provided `message` to a designated pipe, thus enabling communication between different processes. Subsequently, the sent message is recorded in the process log.
 
-#### 9. `ipc_receive_message()`
+### `ipc_receive_message()`
 
-- **Purpose**: This function receives a message via IPC.
+- **Purpose**: The `ipc_receive_message` function facilitates the retrieval of messages through IPC.
 
-- **Design**: It attempts to read a message from a pipe, and if successful, it decodes the received message. It handles non-blocking reads and returns `None` when no message is available.
+- **Design**: This function is configured to read messages from a predefined pipe. It employs non-blocking mode for the pipe to avoid delays in cases where no message is available. Upon successfully reading a message, it decodes and returns the received content. In cases where no message is available, it handles the non-blocking read scenario and returns `None`.
 
-#### 10. `producer()` and `consumer()`
+### `producer()` and `consumer()`
 
-- **Purpose**: These functions are used for the producer-consumer problem to demonstrate process synchronization.
+- **Purpose**: These functions are instrumental in simulating the producer-consumer problem, demonstrating the principles of process synchronization using semaphores.
 
-- **Design**: The `producer` function adds items to a buffer, and the `consumer` function removes items from the buffer. They use semaphores to ensure proper synchronization.
+- **Design**: The `producer` function generates items, simulating a producer, and places them in a buffer. In contrast, the `consumer` function behaves as a consumer, extracting items from the buffer. Both functions use semaphores (`mutex`, `empty`, and `filled`) to regulate access to the buffer, ensuring thread safety. The simulation involves inter-process synchronization to emulate a real-world producer-consumer scenario.
 
-#### 11. `run_producer_consumer_example()`
+### `run_producer_consumer_example()`
 
-- **Purpose**: This function runs the producer-consumer example.
+- **Purpose**: This function is designed to execute the producer-consumer example, showcasing process synchronization through thread coordination.
 
-- **Design**: It creates producer and consumer threads and simulates the producer-consumer problem using semaphores for synchronization.
+- **Design**: It orchestrates the execution of producer and consumer threads, simulating the classic producer-consumer problem. The `producers` and `consumers` are thread instances, and their execution is initiated using `start()`. Additionally, the function features a delay period to allow the threads to operate. Finally, it employs `join()` to await the completion of all threads.
+
+These functions are integral to the advanced Process Manager, providing
 
 These functions are the building blocks of the advanced Process Manager and provide extensive control over processes, threads, and IPC. Understanding their purpose and design is essential for utilizing the Process Manager effectively.
 
