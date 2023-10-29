@@ -148,6 +148,7 @@ This test ensures that the Process Manager successfully creates and manages new 
 
 ![Process Creation Test](images/process_creation.png)
 
+![Process Creation Test Log](images/process_creation_log.png)
 ---
 
 # Functionality Test: Thread Creation
