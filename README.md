@@ -4,66 +4,48 @@
 
 The goal of this project is to design and implement an advanced Process Manager with an emphasis on process synchronization. This Process Manager will allow users to create, manage, and synchronize processes in a multi-threaded environment. It will provide a command-line interface for process creation, management, and synchronization, and it will use system calls for process and thread control.
 
-## Required Functionalities
+## Implemented Functionalities
+This Process Manager project includes the following functionalities:
+1. Process Creation
+2. Process Management (Listing, Termination, and Monitoring)
+3. Thread Support (Thread Creation and Listing)
+4. Inter-Process Communication (IPC)
+5. Process Synchronization (Producer-Consumer)
+6. Command-Line Interface (CLI)
+7. Logging and Reporting
 
-### Process Creation:
+## Installation
+1. Ensure you have Python 3.11 installed. You can download Python 3.11 from the official Python website: [Python Downloads](https://www.python.org/downloads/release/).
 
-- Implement a process creation mechanism that allows users to create new processes.
-- Use system calls (e.g., fork, exec) for process creation.
+2. **Create a Virtual Environment** (Optional but recommended):
+   
+   - On Windows:
+     - Open the Command Prompt.
+     - Navigate to your project directory using the `cd` command.
+     - Create a virtual environment using the following command:
+       ```bash
+       python3.11 -m venv venv
+       ```
+     - Activate the virtual environment:
+       ```bash
+       venv\Scripts\activate
+       ```
 
-### Process Management:
+   - On macOS and Linux:
+     - Open the Terminal.
+     - Navigate to your project directory using the `cd` command.
+     - Create a virtual environment using the following command:
+       ```bash
+       python3.11 -m venv venv
+       ```
+     - Activate the virtual environment:
+       ```bash
+       source venv/bin/activate
+       ```
 
-- Develop functionalities to list, terminate, and monitor running processes.
-- Allow users to view information about each process, such as its process ID (PID), parent process ID, and state.
-
-### Thread Support:
-
-- Extend the Process Manager to support multiple threads within a process.
-- Implement thread creation, termination, and synchronization mechanisms.
-- Use system calls for thread creation (e.g., pthread_create) and synchronization (e.g., mutexes, semaphores).
-
-### Inter-Process Communication (IPC):
-
-- Implement IPC mechanisms to allow processes and threads to communicate and share data.
-- Explore methods like message passing, shared memory, or pipes for IPC.
-- Use system calls for IPC operations (e.g., pipe, msgget, shmget).
-
-### Process Synchronization:
-
-- Implement synchronization primitives such as mutexes and semaphores.
-- Demonstrate the use of synchronization mechanisms to solve common synchronization problems (e.g., producer-consumer, reader-writer).
-
-### Command-Line Interface (CLI) or Graphic User Interface (GUI):
-
-- Develop a user-friendly interface for interacting with the Process Manager.
-- Allow users to create processes, create threads, synchronize threads, and perform IPC operations.
-- Provide clear and informative command syntax and options.
-
-### Logging and Reporting:
-
-- Implement logging and reporting features to track and display the execution of processes and threads.
-- Log significant events, errors, and information related to process synchronization.
-
-## Expected Skills Gained
-
-By working on this project, you will gain the following skills:
-
-- Manipulating processes and threads in various aspects.
-- Exploiting system calls to manipulate processes and threads to achieve specific goals.
-- Developing software that operates reliably while reducing conflicts in using system resources.
-
-## Deliverables
-
-1. Source Code: Provide the source code, including comments explaining the design and implementation, as a Python (`.py`) or C (`.c`) file uploaded to GitHub.
-
-2. Project Report: Include a project report with the following:
-
-   - Project title
-   - List of implemented functionalities
-   - Description of how to install and use the application
-   - Test results for each functionality, accompanied by figures and explanations
-   - Discussion on the project results
-
-3. GitHub Repository Link: The project report should be included as a README file (Markdown format, `readme.md`) within the GitHub repository. The source code should be loaded as a separate file.
-
-Please submit your project via a GitHub Repository link that contains the above deliverables.
+3. **Install Requirements**:
+   
+   In your project directory (with the virtual environment activated if you created one), install the required packages using the following command:
+   
+   ```bash
+   pip install -r requirements.txt
