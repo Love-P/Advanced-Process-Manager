@@ -40,7 +40,21 @@ This Process Manager project includes the following functionalities:
    ```bash
    pip install -r requirements.txt
 
+### Usage Menu
 
+```bash
+Options:
+1. Create a process
+2. Create a thread
+3. Terminate a thread
+4. Monitor all running processes on your device.
+5. Send IPC message
+6. Receive IPC message
+7. Clear log file
+8. Process Synchronization (Producer-Consumer)
+9. Exit
+Select an option:
+```
 
 ### Usage
 
