@@ -56,7 +56,7 @@ Options:
 Select an option:
 ```
 
-## Function Explanations and Design
+## Structural Explaination
 
 In this section, we delve into the technical details of each key function used in the advanced Process Manager, utilizing specific terminology and relevant packages.
 
