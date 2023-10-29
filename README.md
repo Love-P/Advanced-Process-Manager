@@ -216,7 +216,7 @@ This test assesses the ability to terminate threads within a process in the Proc
 This test verifies that the Process Manager can manage the termination of individual threads.
 
 ![Thread Termination Test](images/terminate_thread.png)
-![Thread Termination Test](images/thread_creation_log.png)
+![Thread Termination Test](images/terminate_thread_log.png)
 ---
 
 # Functionality Test: List Processes
