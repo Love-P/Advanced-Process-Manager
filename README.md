@@ -325,4 +325,4 @@ While the Advanced Process Manager demonstrates impressive capabilities, there's
 
 The Advanced Process Manager is a versatile project that offers extensive functionality for process and thread management, IPC, and process synchronization. The project demonstrates a fundamental understanding of process management and synchronization concepts and serves as a practical tool with real-world applications. Its meticulous logging and reporting ensure transparency and accountability in system operations. This project lays the foundation for further exploration and development of process management and parallel computing tools, benefiting system administrators, developers, and educators.
 
-## Copyright (c) 2023 Love Patel
+<sup>Copyright &copy; 2023 Love Patel</sup>
