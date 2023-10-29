@@ -4,6 +4,16 @@
 
 The goal of this project is to design and implement an advanced Process Manager with an emphasis on process synchronization. This Process Manager will allow users to create, manage, and synchronize processes in a multi-threaded environment. It will provide a command-line interface for process creation, management, and synchronization, and it will use system calls for process and thread control.
 
+## Implemented Functionalities
+This Process Manager project includes the following functionalities:
+1. Process Creation
+2. Process Management (Listing, Termination, and Monitoring)
+3. Thread Support (Thread Creation and Listing)
+4. Inter-Process Communication (IPC)
+5. Process Synchronization (Producer-Consumer)
+6. Command-Line Interface (CLI)
+7. Logging and Reporting
+
 ## Table of Contents
 1. [Project Overview](#project-overview)
 2. [Installation](#installation)
