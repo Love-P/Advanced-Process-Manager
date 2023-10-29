@@ -146,7 +146,7 @@ This test aims to verify the ability to create new processes within the Process 
 ## Explanation
 This test ensures that the Process Manager successfully creates and manages new processes.
 
-![Process Creation Test](main/images/process_creation.png)
+![Process Creation Test](images/process_creation.png)
 
 ---
 
