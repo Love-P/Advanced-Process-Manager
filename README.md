@@ -17,15 +17,10 @@ This Process Manager project includes the following functionalities:
 ## Installation
 1. Ensure you have Python 3.11.6 installed. You can download Python 3.11.6 from the official Python website: [Python Downloads](https://www.python.org/downloads/release/).
 
-2. **Create a Virtual Environment** (Optional but recommended):
-   
+2. **Create a Virtual Environment** (recommended):
    - On Windows:
      - Open the Command Prompt.
      - Navigate to your project directory using the `cd` command.
-     - Create a virtual environment using the following command:
-       ```bash
-       python3.11 -m venv venv
-       ```
      - Activate the virtual environment:
        ```bash
        venv\Scripts\activate
@@ -34,17 +29,12 @@ This Process Manager project includes the following functionalities:
    - On macOS and Linux:
      - Open the Terminal.
      - Navigate to your project directory using the `cd` command.
-     - Create a virtual environment using the following command:
-       ```bash
-       python3.11 -m venv venv
-       ```
      - Activate the virtual environment:
        ```bash
        source venv/bin/activate
        ```
 
 3. **Install Requirements**:
-   
    In your project directory (with the virtual environment activated if you created one), install the required packages using the following command:
    
    ```bash
