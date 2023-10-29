@@ -153,16 +153,31 @@ This test aims to verify the ability to create new processes within the Process 
 This test ensures that the Process Manager successfully creates and manages new processes.
 
 ![Process Creation Test](images/process_creation.png)
-
 ![Process Creation Test Log](images/process_creation_log.png)
 ---
 
 # Functionality Test: Thread Creation
 
 ## Test Description
-This test focuses on the ability to create threads within a process in the Process Manager.
+This test focuses on the ability to create threads within a process in the Process Manager. There is the ability to create a single thread, or multi-threads.
 
-## Test Procedure
+## Test Procedure (Single Thread)
+1. Run the Process Manager.
+2. Create a new thread.
+4. Enter a unique thread name and observe the thread creation.
+
+## Expected Result
+- A new thread with the specified name is created.
+- The thread's execution can be monitored and controlled.
+
+## Explanation
+This test validates the Process Manager's capability to manage single thread creation.
+
+![Thread Creation Test Single](images/thread_creation.png)
+![Thread Creation Test Single Log](images/thread_creation_log.png)
+---
+
+## Test Procedure (Multi-Thread)
 1. Run the Process Manager.
 2. Create a new process.
 3. Within the process menu, select the option to create a new thread.
@@ -174,13 +189,13 @@ This test focuses on the ability to create threads within a process in the Proce
 - Multiple threads within the same process should work independently.
 
 ## Explanation
-This test validates the Process Manager's capability to manage threads within a process.
+This test validates the Process Manager's capability to manage multiple threads within a process.
 
-![Thread Creation Test](placeholder_image.png)
-
+![Thread Creation Test Multi](images/multi_thread_create.png)
+![Thread Creation Test Multi Log](images/multi_thread_create_log.png)
 ---
 
-# Functionality Test: Process Termination
+# Functionality Test: Thread Termination
 
 ## Test Description
 This test assesses the ability to terminate threads within a process in the Process Manager.
@@ -200,7 +215,88 @@ This test assesses the ability to terminate threads within a process in the Proc
 ## Explanation
 This test verifies that the Process Manager can manage the termination of individual threads.
 
-![Thread Termination Test](placeholder_image.png)
+![Thread Termination Test](images/terminate_thread.png)
+![Thread Termination Test](images/thread_creation_log.png)
+---
 
+# Functionality Test: List Processes
 
+## Test Description
+This test evaluates the capability of the Process Manager to list and provide information about running processes. It includes the option to list processes created through the code and all processes on the computer.
 
+## Test Procedure
+1. Run the Process Manager.
+2. Select the option to list processes.
+3. Choose to list processes created through your code or all processes on the computer.
+4. Observe the displayed information about the processes.
+
+## Expected Result
+- If the user selects "Processes created through your code," the Process Manager successfully lists and displays information about processes created by the script. The information includes the process PID, parent PID, name, and status.
+- If the user selects "All processes on the computer," the Process Manager lists and displays information about all processes running on the computer, not limited to those created by the script.
+
+## Explanation
+This test ensures that the Process Manager can accurately list and provide information about processes, offering insight into both processes created by the code and all processes on the computer.
+
+![List Processes Test](images/list_processes.png)
+![List Processes Test Log](images/list_processes_log.png)
+---
+
+# Functionality Test: Inter-Process Communication (IPC)
+
+## Test Description
+This test focuses on the capability of the Process Manager to transmit and receive messages between processes via Inter-Process Communication (IPC).
+
+## Test Procedure (Send Message)
+1. Run the Process Manager.
+2. Select the option to send an IPC message.
+3. Enter a message and send it to another process.
+
+## Expected Result
+- The message is successfully sent to the designated process.
+- The recipient process receives the message and can display it.
+
+## Explanation
+This test validates the Process Manager's ability to send messages between processes using IPC.
+
+![IPC Send Test](images/ipc_send.png)
+![IPC Send Test Log](images/ipc_send_log.png)
+---
+
+## Test Procedure (Receive Message)
+1. Run the Process Manager.
+2. Select the option to receive an IPC message.
+3. Wait for a message to be sent from another process.
+
+## Expected Result
+- The process successfully receives a message sent by another process.
+- The received message can be displayed.
+
+## Explanation
+This test verifies the Process Manager's ability to receive messages sent by other processes using IPC.
+
+![IPC Receive Test](images/ipc_receive.png)
+---
+
+# Functionality Test: Process Synchronization (Producer-Consumer)
+
+## Test Description
+This test evaluates the process synchronization functionality within the Process Manager, focusing on the Producer-Consumer problem.
+
+## Test Procedure
+1. Run the Process Manager.
+2. Select the option to execute the Producer-Consumer example.
+3. Observe the behavior of the producer and consumer threads as they interact with the shared buffer.
+
+## Expected Result
+- Two producer threads and two consumer threads are created.
+- The producer threads successfully produce items and place them in the shared buffer.
+- The consumer threads successfully consume items from the shared buffer.
+- The synchronization mechanisms, including mutex, empty, and filled semaphores, operate effectively to ensure thread safety.
+- The Producer-Consumer problem is simulated with proper synchronization.
+
+## Explanation
+This test demonstrates the Process Manager's capability to implement process synchronization and coordinate threads to solve the classic Producer-Consumer problem.
+
+![Producer-Consumer Test](images/producer_consumer.png)
+![Producer-Consumer Test Log](images/producer_consumer_log.png)
+---
