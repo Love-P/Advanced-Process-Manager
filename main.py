@@ -86,22 +86,23 @@ def process_menu(process_name):
 
         if choice == "1":
             thread_name = input("Enter a name for the thread: ")
-            create_thread(thread_name)
+            create_thread(thread_name)  # Call create_thread to create a new thread
             print('\n')
         elif choice == "2":
-            list_threads()
+            list_threads()  # Call list_threads to display the threads in this process
             print('\n')
         elif choice == "3":
             print("Exited process.")
             break
         else:
-            print("Invalid option. Try again")
+            print("Invalid option. Try again.")
     return
 
 # Function to create a new child process
 def create_process(process_name):
-    pid = os.fork()
-    if pid == 0:
+    pid = os.fork()  # Fork a new child process
+
+    if pid == 0:  # In the child process
         try:
             os.execlp(process_name, process_name)  # Replace the current process image with the new process
         except Exception as e:
@@ -111,7 +112,8 @@ def create_process(process_name):
         with mutex:
             running_processes[pid] = process_name
         logging.info(f"Child process '{process_name}' with PID {pid} created.")
-        process_menu(process_name)
+        process_menu(process_name)  # Enter the process menu for the child process
+
 
 # Function to terminate a thread within the current process
 def terminate_thread(thread_name):
@@ -119,20 +121,27 @@ def terminate_thread(thread_name):
     threads_to_remove = []
 
     process_pid = os.getpid()
+    
+    # Iterate through the threads in the current process
     for thread_id, name in process_threads.get(process_pid, []):
         if name == thread_name:
+            # Request thread termination using the pthread_cancel function
             if libc.pthread_cancel(thread_id) == 0:
                 print(f"Thread '{thread_name}' termination requested.")
                 logging.info(f"Thread '{thread_name}' termination requested.")
                 threads_to_remove.append((thread_id, name))
             else:
                 logging.error(f"Failed to request termination for thread '{thread_name}'")
-
+    
+    # Wait for the terminated threads and remove them from the threads list
     for thread_id, name in threads_to_remove:
         if libc.pthread_join(thread_id, None) == 0:
             print(f"Thread '{name}' terminated.")
             logging.info(f"Thread '{name}' terminated.")
+    
+    # Update the threads list, removing the terminated threads
     threads = [(t, n) for t, n in threads if (t, n) not in threads_to_remove]
+
 
 # Function to list processes (created through the code or all processes on the computer)
 def list_processes():
@@ -177,21 +186,27 @@ def clear_log_file():
 
 # Function to send a message via IPC
 def ipc_send_message(message):
-    os.write(write_pipe, message.encode())
+    os.write(write_pipe, message.encode())  # Write the message to the pipe
     process_log.info(f"Message sent: {message}")
 
 # Function to receive a message via IPC
 def ipc_receive_message():
     try:
         flags = fcntl.fcntl(read_pipe, fcntl.F_GETFL)
-        fcntl.fcntl(read_pipe, fcntl.F_SETFL, flags | os.O_NONBLOCK)
-        message = os.read(read_pipe, 1024)
-        return message.decode()
+        fcntl.fcntl(read_pipe, fcntl.F_SETFL, flags | os.O_NONBLOCK)  # Set non-blocking mode for the pipe
+        
+        # Attempt to read a message from the pipe (non-blocking)
+        message = os.read(read_pipe, 1024)  # Read from the pipe
+        
+        return message.decode()  # Decode the received message
     except OSError as e:
         if e.errno == errno.EAGAIN or errno == errno.EWOULDBLOCK:
+            # Handle non-blocking read by returning None if no message is available
             return None
         else:
-            raise
+            raise  # Raise any other OS-related exceptions
+
+
 
 # Producer function for the producer-consumer problem
 def producer():
@@ -220,20 +235,28 @@ def consumer():
 
 # Function to run the producer-consumer example
 def run_producer_consumer_example():
+    # Create two producer threads and two consumer threads
     producers = [threading.Thread(target=producer) for _ in range(2)]
-    consumers = [threading.Thread(target=consumer) for _ in range(2]
+    consumers = [threading.Thread(target=consumer) for _ in range(2)]
 
+    # Start the producer threads
     for producer_thread in producers:
         producer_thread.start()
+    
+    # Start the consumer threads
     for consumer_thread in consumers:
         consumer_thread.start()
 
-    time.sleep(5)  # Allow the threads to run for some time
+    time.sleep(5)  # Allow the producer and consumer threads to run for some time
 
+    # Wait for the producer threads to complete
     for producer_thread in producers:
         producer_thread.join()
+
+    # Wait for the consumer threads to complete
     for consumer_thread in consumers:
         consumer_thread.join()
+
 
 # Main program
 if __name__ == "__main__":
