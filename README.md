@@ -91,7 +91,7 @@ This test aims to verify the ability to create new processes within the Process 
 - The main process should continue running and be capable of managing the child process.
 
 ## Explanation
-This test ensures that the Process Manager successfully creates and manages new processes.
+This test ensures that the Process Manager successfully creates and manages new processes. It involves the use of the os.fork() function to create new processes, demonstrating the system's capability to run multiple processes concurrently.
 
 ![Process Creation Test](images/process_creation.png)
 ![Process Creation Test Log](images/process_creation_log.png)
@@ -112,7 +112,7 @@ This test focuses on the ability to create threads within a process in the Proce
 - The thread's execution can be monitored and controlled.
 
 ## Explanation
-This test validates the Process Manager's capability to manage single thread creation.
+This test validates the Process Manager's capability to manage single thread creation. It involves the use of the libc.pthread_create function to create threads and demonstrates the system's ability to handle multi-threaded applications.
 
 ![Thread Creation Test Single](images/thread_creation.png)
 ![Thread Creation Test Single Log](images/thread_creation_log.png)
@@ -130,7 +130,7 @@ This test validates the Process Manager's capability to manage single thread cre
 - Multiple threads within the same process should work independently.
 
 ## Explanation
-This test validates the Process Manager's capability to manage multiple threads within a process.
+This test validates the Process Manager's capability to manage multiple threads within a process. It demonstrates how threads within a process can function independently, illustrating the concept of multi-threading.
 
 ![Thread Creation Test Multi](images/multi_thread_create.png)
 ![Thread Creation Test Multi Log](images/multi_thread_create_log.png)
@@ -154,7 +154,7 @@ This test assesses the ability to terminate threads within a process in the Proc
 - The Process Manager effectively handles thread termination requests.
 
 ## Explanation
-This test verifies that the Process Manager can manage the termination of individual threads.
+This test verifies that the Process Manager can manage the termination of individual threads. It involves the use of the libc.pthread_cancel and libc.pthread_join functions for requesting and confirming thread termination.
 
 ![Thread Termination Test](images/terminate_thread.png)
 ![Thread Termination Test](images/terminate_thread_log.png)
@@ -176,7 +176,7 @@ This test evaluates the capability of the Process Manager to list and provide in
 - If the user selects "All processes on the computer," the Process Manager lists and displays information about all processes running on the computer, not limited to those created by the script.
 
 ## Explanation
-This test ensures that the Process Manager can accurately list and provide information about processes, offering insight into both processes created by the code and all processes on the computer.
+This test ensures that the Process Manager can accurately list and provide information about processes. It offers insight into both processes created by the code and all processes on the computer. The test uses the psutil library to gather process information.
 
 ![List Processes Test](images/list_processes.png)
 ![List Processes Test Log](images/list_processes_log.png)
@@ -197,7 +197,7 @@ This test focuses on the capability of the Process Manager to transmit and recei
 - The recipient process receives the message and can display it.
 
 ## Explanation
-This test validates the Process Manager's ability to send messages between processes using IPC.
+This test validates the Process Manager's ability to send messages between processes using IPC. It uses named pipes (FIFOs) for inter-process communication and non-blocking reads to receive messages.
 
 ![IPC Send Test](images/ipc_send.png)
 ![IPC Send Test Log](images/ipc_send_log.png)
@@ -213,7 +213,7 @@ This test validates the Process Manager's ability to send messages between proce
 - The received message can be displayed.
 
 ## Explanation
-This test verifies the Process Manager's ability to receive messages sent by other processes using IPC.
+This test verifies the Process Manager's ability to receive messages sent by other processes using IPC. It uses non-blocking reads to handle IPC message reception.
 
 ![IPC Receive Test](images/ipc_receive.png)
 ---
@@ -236,7 +236,7 @@ This test evaluates the process synchronization functionality within the Process
 - The Producer-Consumer problem is simulated with proper synchronization.
 
 ## Explanation
-This test demonstrates the Process Manager's capability to implement process synchronization and coordinate threads to solve the classic Producer-Consumer problem.
+This test demonstrates the Process Manager's capability to implement process synchronization and coordinate threads to solve the classic Producer-Consumer problem. It involves the use of semaphores and mutexes to achieve synchronization.
 
 ![Producer-Consumer Test](images/producer_consumer.png)
 ![Producer-Consumer Test Log](images/producer_consumer_log.png)
@@ -325,3 +325,4 @@ While the Advanced Process Manager demonstrates impressive capabilities, there's
 
 The Advanced Process Manager is a versatile project that offers extensive functionality for process and thread management, IPC, and process synchronization. The project demonstrates a fundamental understanding of process management and synchronization concepts and serves as a practical tool with real-world applications. Its meticulous logging and reporting ensure transparency and accountability in system operations. This project lays the foundation for further exploration and development of process management and parallel computing tools, benefiting system administrators, developers, and educators.
 
+## Copyright (c) 2023 Love Patel
