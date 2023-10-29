@@ -56,38 +56,79 @@ Options:
 Select an option:
 ```
 
-### Usage
+### Function Explanations and Design
 
-Here are the key functionalities and how to use them in the advanced Process Manager:
+In this section, we'll provide an overview of the key functions used in the advanced Process Manager and their design. These functions are essential for creating, managing, and synchronizing processes and threads.
 
-#### 1. Create a Process
+#### 1. `create_thread(thread_name)`
 
-To create a new process, run the Process Manager and choose "Create a process" from the main menu. Enter the name of the process, and a child process will be created. You can interact with the child process by creating threads, listing threads, or exiting the process.
+- **Purpose**: This function is used to create a new thread within a process.
 
-#### 2. Create a Thread
+- **Design**: It obtains the process ID and generates a unique thread ID. It defines a `thread_func` that represents the thread's execution logic. Using the `pthread_create` function, a new thread is created and added to the list of threads for the current process.
 
-Within a running process, you can create threads. Choose "Create a thread" from the main menu and provide a name for the thread. The new thread will be created and logged.
+#### 2. `list_threads()`
 
-#### 3. Terminate a Thread
+- **Purpose**: This function lists the threads within the current process.
 
-If you wish to terminate a specific thread within a process, choose "Terminate a thread" from the main menu, enter the name of the thread you want to terminate, and the thread will be requested for termination. The terminated threads will be logged and removed.
+- **Design**: It retrieves the process ID and fetches the list of threads associated with that process. It then displays the thread IDs and their names.
 
-#### 4. Monitor All Running Processes
+#### 3. `process_menu(process_name)`
 
-You can view and monitor all processes running on your computer. Choose "Monitor all running processes on your device" from the main menu and select whether you want to list processes created through your code or all processes on the computer. The information about these processes will be displayed.
+- **Purpose**: This function is responsible for managing the interaction within a child process.
 
-#### 5. Inter-Process Communication (IPC)
+- **Design**: It provides a menu for creating threads, listing threads, or exiting the child process. The menu options allow users to interact with threads within the process.
 
-The Process Manager supports inter-process communication (IPC). You can send and receive messages between processes. Choose "Send IPC message" to send a message to another process. To receive IPC messages, select "Receive IPC message" from the main menu. You can also clear the log file or exit the program.
+#### 4. `create_process(process_name)`
 
-#### 6. Process Synchronization (Producer-Consumer)
+- **Purpose**: This function creates a new child process.
 
-The program includes an example of process synchronization using the producer-consumer problem. To run the producer-consumer example, select "Process Synchronization (Producer-Consumer)" from the main menu. This demonstrates the synchronization of threads in a multi-threaded environment.
+- **Design**: It forks a new child process using `os.fork()`. In the child process, it attempts to execute a new process specified by `process_name`. The function also logs the creation of the child process.
 
-#### 7. Exit
+#### 5. `terminate_thread(thread_name)`
 
-When you're done using the Process Manager, you can exit the program by selecting "Exit" from the main menu.
+- **Purpose**: This function requests the termination of a specific thread within the current process.
 
-Make sure to review the log file for detailed information about the processes and threads. The logging can be found in the `processes.log` file.
+- **Design**: It iterates through the threads in the current process, identifies the target thread by name, and requests thread termination using the `pthread_cancel` function. The function waits for the terminated threads and removes them from the list.
 
-Enjoy using the advanced Process Manager for process synchronization and management!
+#### 6. `list_processes()`
+
+- **Purpose**: This function lists processes created through the code or all processes on the computer.
+
+- **Design**: It provides a menu with options to list processes. It uses the `psutil` library to retrieve information about processes, including their PIDs, parent PIDs, names, and status.
+
+#### 7. `clear_log_file()`
+
+- **Purpose**: This function clears the log file used for logging process and thread activities.
+
+- **Design**: It opens the log file and empties its content, effectively clearing it for future use.
+
+#### 8. `ipc_send_message(message)`
+
+- **Purpose**: This function sends a message via Inter-Process Communication (IPC).
+
+- **Design**: It writes the message to a pipe, allowing communication between processes. The message is also logged for reference.
+
+#### 9. `ipc_receive_message()`
+
+- **Purpose**: This function receives a message via IPC.
+
+- **Design**: It attempts to read a message from a pipe, and if successful, it decodes the received message. It handles non-blocking reads and returns `None` when no message is available.
+
+#### 10. `producer()` and `consumer()`
+
+- **Purpose**: These functions are used for the producer-consumer problem to demonstrate process synchronization.
+
+- **Design**: The `producer` function adds items to a buffer, and the `consumer` function removes items from the buffer. They use semaphores to ensure proper synchronization.
+
+#### 11. `run_producer_consumer_example()`
+
+- **Purpose**: This function runs the producer-consumer example.
+
+- **Design**: It creates producer and consumer threads and simulates the producer-consumer problem using semaphores for synchronization.
+
+These functions are the building blocks of the advanced Process Manager and provide extensive control over processes, threads, and IPC. Understanding their purpose and design is essential for utilizing the Process Manager effectively.
+
+
+
+
+
