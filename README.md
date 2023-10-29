@@ -40,7 +40,7 @@ This Process Manager project includes the following functionalities:
    ```bash
    pip install -r requirements.txt
 
-### Usage Menu
+## Usage Menu
 
 ```bash
 Options:
@@ -56,7 +56,7 @@ Options:
 Select an option:
 ```
 
-### Function Explanations and Design
+## Function Explanations and Design
 
 In this section, we'll provide an overview of the key functions used in the advanced Process Manager and their design. These functions are essential for creating, managing, and synchronizing processes and threads.
 
