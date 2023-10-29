@@ -17,7 +17,13 @@ This Process Manager project includes the following functionalities:
 ## Installation
 1. Ensure you have Python 3.11.6 installed. You can download Python 3.11.6 from the official Python website: [Python Downloads](https://www.python.org/downloads/release/).
 
-2. **Create a Virtual Environment** (recommended):
+2. **Clone the repository and cd into it:
+   ```bash
+      git clone https://github.com/Love-P/Advanced-Process-Manager.git
+      cd Advanced-Process-Manager
+   ```
+
+3. **Create a Virtual Environment** (recommended):
    - On Windows:
      - Open the Command Prompt.
      - Navigate to your project directory using the `cd` command.
@@ -34,7 +40,7 @@ This Process Manager project includes the following functionalities:
        source venv/bin/activate
        ```
 
-3. **Install Requirements**:
+4. **Install Requirements**:
    In your project directory (with the virtual environment activated if you created one), install the required packages using the following command:
    
    ```bash
