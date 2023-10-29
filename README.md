@@ -128,8 +128,72 @@ In this section, we delve into the technical details of each key function used i
 
 These functions are integral to the advanced Process Manager, providing fine-grained control over processes, threads, and IPC, with a strong emphasis on process synchronization and thread management. Understanding their design is crucial for harnessing the capabilities of the Process Manager effectively.
 
+# Functionality Test: Process Creation
 
+## Test Description
+This test aims to verify the ability to create new processes within the Process Manager.
 
+## Test Procedure
+1. Run the Process Manager.
+2. Select the option to create a new process.
+3. Enter a unique process name and observe the process creation.
+
+## Expected Result
+- A new process with the specified name is created.
+- The child process is executed independently, and a process menu is available for interaction.
+- The main process should continue running and be capable of managing the child process.
+
+## Explanation
+This test ensures that the Process Manager successfully creates and manages new processes.
+
+![Process Creation Test](placeholder_image.png)
+
+---
+
+# Functionality Test: Thread Creation
+
+## Test Description
+This test focuses on the ability to create threads within a process in the Process Manager.
+
+## Test Procedure
+1. Run the Process Manager.
+2. Create a new process.
+3. Within the process menu, select the option to create a new thread.
+4. Enter a unique thread name and observe the thread creation.
+
+## Expected Result
+- A new thread with the specified name is created within the child process.
+- The thread's execution can be monitored and controlled.
+- Multiple threads within the same process should work independently.
+
+## Explanation
+This test validates the Process Manager's capability to manage threads within a process.
+
+![Thread Creation Test](placeholder_image.png)
+
+---
+
+# Functionality Test: Process Termination
+
+## Test Description
+This test assesses the ability to terminate threads within a process in the Process Manager.
+
+## Test Procedure
+1. Run the Process Manager.
+2. Create a new process.
+3. Create multiple threads within the process.
+4. Select the option to terminate a thread within the process menu.
+5. Enter the name of the thread to be terminated and confirm the termination.
+
+## Expected Result
+- The specified thread is successfully terminated.
+- The remaining threads continue to execute without disruption.
+- The Process Manager effectively handles thread termination requests.
+
+## Explanation
+This test verifies that the Process Manager can manage the termination of individual threads.
+
+![Thread Termination Test](placeholder_image.png)
 
 
 
