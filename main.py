@@ -1,29 +1,37 @@
 import os, sys, logging, multiprocessing, psutil, ctypes, time, random, threading, fcntl, errno
 from queue import Queue
 
+# Initialize the logging configuration
 logging.basicConfig(filename='processes.log', level=logging.INFO,
                     format='%(asctime)s - %(message)s')
 process_log = logging.getLogger('processes')
 process_log.setLevel(logging.INFO)
 
+# Data structures to keep track of running processes and threads
 running_processes = {}
 process_threads = {}
 threads = []
+
+# Create multiprocessing Pipes and Queue for inter-process communication
 pipe_conn, child_conn = multiprocessing.Pipe()
 shared_queue = Queue()
-mutex = multiprocessing.Lock() #mutex to protect a shared resource. This lock ensures that concurrent access to the running_processes dictionary is properly synchronized.
+
+# Mutex to protect shared resource (running_processes dictionary)
+mutex = multiprocessing.Lock()
+
+# Create two pipes for inter-process communication
 read_pipe, write_pipe = os.pipe()
 
+# Define the buffer size for the producer-consumer problem
 BUFFER_SIZE = 5
-
-# Shared buffer
 buffer = []
 
-# Semaphores
+# Semaphores for producer-consumer problem
 mutex = threading.Semaphore(1)  # Mutex for buffer access
 empty = threading.Semaphore(BUFFER_SIZE)  # Semaphore for empty slots
 filled = threading.Semaphore(0)  # Semaphore for filled slots
 
+# Determine the platform and load the appropriate C library for pthread functions
 if sys.platform.startswith('win'):
     libc = ctypes.CDLL('msvcrt')
 elif sys.platform.startswith('linux'):
@@ -33,15 +41,18 @@ elif sys.platform == 'darwin':
 else:
     raise OSError("Unsupported platform")
 
+# Function to create a new thread
 def create_thread(thread_name):
     process_pid = os.getpid()
     thread_id = ctypes.c_long()
-    
+
     def thread_func():
         logging.info(f"Thread '{thread_name}' running")
-    
+
+    # Convert the thread_func to a C-compatible function pointer
     thread_func_ptr = ctypes.CFUNCTYPE(None)(thread_func)
 
+    # Create a new thread
     if libc.pthread_create(ctypes.byref(thread_id), None, thread_func_ptr, None) == 0:
         threads.append((thread_id, thread_name))
         process_threads.setdefault(process_pid, []).append((thread_id, thread_name))
@@ -49,6 +60,7 @@ def create_thread(thread_name):
     else:
         logging.error("Failed to create thread")
 
+# Function to list threads in the current process
 def list_threads():
     process_pid = os.getpid()
     threads = process_threads.get(process_pid, [])
@@ -60,6 +72,7 @@ def list_threads():
         for thread_id, thread_name in threads:
             print(f"Thread ID: {thread_id}, Name: {thread_name}")
 
+# Function to interact with the created child process
 def process_menu(process_name):
     process_log.info(f"Child process '{process_name}' with PID {os.getpid()} running")
     process_threads[os.getpid()] = []
@@ -82,27 +95,29 @@ def process_menu(process_name):
             print("Exited process.")
             break
         else:
-            print("Invalid option. Try again.")
+            print("Invalid option. Try again")
     return
 
+# Function to create a new child process
 def create_process(process_name):
     pid = os.fork()
     if pid == 0:
         try:
-            os.execlp(process_name, process_name)
+            os.execlp(process_name, process_name)  # Replace the current process image with the new process
         except Exception as e:
             logging.error(f"Child process '{process_name}' with PID {os.getpid()} encountered an error: {str(e)}")
-        os._exit(1)
+        os._exit(1)  # Exit the child process
     else:
         with mutex:
             running_processes[pid] = process_name
         logging.info(f"Child process '{process_name}' with PID {pid} created.")
         process_menu(process_name)
 
+# Function to terminate a thread within the current process
 def terminate_thread(thread_name):
     global threads
     threads_to_remove = []
-    
+
     process_pid = os.getpid()
     for thread_id, name in process_threads.get(process_pid, []):
         if name == thread_name:
@@ -112,19 +127,20 @@ def terminate_thread(thread_name):
                 threads_to_remove.append((thread_id, name))
             else:
                 logging.error(f"Failed to request termination for thread '{thread_name}'")
-    
+
     for thread_id, name in threads_to_remove:
         if libc.pthread_join(thread_id, None) == 0:
             print(f"Thread '{name}' terminated.")
             logging.info(f"Thread '{name}' terminated.")
     threads = [(t, n) for t, n in threads if (t, n) not in threads_to_remove]
 
+# Function to list processes (created through the code or all processes on the computer)
 def list_processes():
     while True:
         print("List Processes Sub-Menu:")
         print("1. Processes created through your code")
         print("2. All processes on the computer")
-        print("3. Back to main menu")
+        print("3. Back to the main menu")
         choice = input("Select an option: ")
 
         if choice == "1":
@@ -153,16 +169,18 @@ def list_processes():
     print('\n')
     print('To monitor all running processes, go to the log file or view them above.')
 
+# Function to clear the log file
 def clear_log_file():
     with open('processes.log', 'w'):
         pass
     print('\nlog file cleared.')
 
-
+# Function to send a message via IPC
 def ipc_send_message(message):
     os.write(write_pipe, message.encode())
     process_log.info(f"Message sent: {message}")
 
+# Function to receive a message via IPC
 def ipc_receive_message():
     try:
         flags = fcntl.fcntl(read_pipe, fcntl.F_GETFL)
@@ -170,12 +188,12 @@ def ipc_receive_message():
         message = os.read(read_pipe, 1024)
         return message.decode()
     except OSError as e:
-        if e.errno == errno.EAGAIN or e.errno == errno.EWOULDBLOCK:
+        if e.errno == errno.EAGAIN or errno == errno.EWOULDBLOCK:
             return None
         else:
             raise
 
-
+# Producer function for the producer-consumer problem
 def producer():
     for i in range(10):
         item = f"Item-{i}"  # You can generate your items here
@@ -188,7 +206,7 @@ def producer():
         filled.release()  # Notify that a slot is filled
         time.sleep(random.uniform(0.1, 0.5))  # Simulate work
 
-# Consumer function
+# Consumer function for the producer-consumer problem
 def consumer():
     for i in range(10):
         filled.acquire()  # Wait for a filled slot
@@ -200,10 +218,10 @@ def consumer():
         empty.release()  # Notify that a slot is empty
         time.sleep(random.uniform(0.1, 0.5))  # Simulate work
 
-
+# Function to run the producer-consumer example
 def run_producer_consumer_example():
     producers = [threading.Thread(target=producer) for _ in range(2)]
-    consumers = [threading.Thread(target=consumer) for _ in range(2)]
+    consumers = [threading.Thread(target=consumer) for _ in range(2]
 
     for producer_thread in producers:
         producer_thread.start()
@@ -217,6 +235,7 @@ def run_producer_consumer_example():
     for consumer_thread in consumers:
         consumer_thread.join()
 
+# Main program
 if __name__ == "__main__":
     while True:
         print("Options:")
@@ -231,6 +250,7 @@ if __name__ == "__main__":
         print("9. Exit")
         choice = input("Select an option: ").lower()
 
+        # Menu options based on user choice
         match choice:
             case "1":
                 process_name = input("Enter the process name: ")
